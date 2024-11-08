@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <h1>Archive</h1>
+        <input id="fileInput" type="file" accept=" .txt" style="display: none;" />
+        <div>
+            <button id="newFolderButton" onclick="displayFolderInput()">New Folder</button>
+            <input id="folderInput" type="text"  maxlength="12" style="display: none;" />
+            <button id="newFileButton" onclick="document.getElementById('fileInput').click()">New File</button>
+            <button id="removeButton" onclick="toggleDeleteButtons()">Remove</button>
+        </div>
+        <hr>
+
+        <div id="foldersDiv"></div>
+        <div id="filesDiv" style="display: none;">
+            <button class="backButton" onclick="backToFolders()">&lt back</button>
+            <h2 id="folderTitle" style="display: inline;"></h2>
+            <div id="filesListDiv"></div>
+        </div>
+        <div id="fileDisplay" style="display: none;">
+            <button class="backButton" onclick="backToFiles()">&lt back</button>
+            <h2 id="fileTitle" style="display: inline;"></h2>
+            <div id="fileContent"></div>
+        </div>
+    </main>
+    <footer>
+        <p>
+            Last updated: November 8th 2024 <br>
+            <a href="https://github.com/Diogo7Matias">@diogo7matias</a> on github
+        </p>
+    </footer>
+    <script src="index.js"></script>
+</body>
+</html>

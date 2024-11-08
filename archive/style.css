@@ -1,0 +1,140 @@
+html, body {
+    background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+    background-color: rgb(19, 19, 19);
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+footer {
+    background: linear-gradient(rgb(19, 19, 19), rgb(10, 10, 10));
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 0px;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+a {
+    color: antiquewhite;
+}
+
+a:hover {
+    color: rgb(255, 221, 176);
+    font-weight: bold;
+    text-decoration: underline;
+    display: inline-block; /* Allows scaling */
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+h1 {
+    font-size: 3.5em;
+    margin: 10px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ffffff; 
+    width: 40%;
+}
+
+div {
+    margin: 10px;
+}
+
+#folderInput {
+    width: 350px;
+    height: 40px;
+    font-size: 1em;
+    vertical-align: middle;
+}
+
+button {
+    width: 160px;
+    height: 60px;
+    margin: 10px;
+    font-size: 0.8em;
+    background-color: transparent;
+    color: white;
+    border-style: solid;
+    border-radius: 10px;
+    border-color: white;
+    border-width: 1px;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    border-color: black;
+}
+
+button:disabled {
+    cursor: default;
+    background-color: transparent;
+    color: rgb(145, 145, 145);
+    border-color: rgb(145, 145, 145);
+}
+
+.deleteButton {
+    width: 110px;
+    height: 40px;
+    margin: 0px;
+    margin-left: 20px;
+    font-size: 0.7em;
+    border-radius: 20px;
+    vertical-align: middle;
+}
+
+.backButton {
+    width: 100px;
+    height: 50px;
+    margin: 10px;
+    font-size: 0.7em;
+}
+
+.noContentAvailable {
+    color: rgba(255, 255, 255, 0.414);
+    font-style: italic;
+}
+
+#folderTitle, #fileTitle {
+    vertical-align: middle;
+}
+
+.folder:hover, .file:hover{
+    text-decoration: underline;
+    color: antiquewhite;
+    cursor: pointer;
+}
+
+#fileContent {
+    background-color: rgb(13, 13, 13);
+    font-family: monospace;
+    text-align: justify;
+    line-height: 50px;
+    padding: 20px;
+    border-radius: 20px;
+    border-style: solid;
+    border-color: antiquewhite;
+}
+
+#foldersDiv, #filesDiv, #fileDisplay {
+    /* width: 800px; */
+    /* height: 400px; */
+    margin-left: 120px;
+    margin-right: 120px;
+    /* border: 2px, solid #ffffff, ; */
+}
