@@ -129,12 +129,14 @@ button:disabled {
     border-radius: 20px;
     border-style: solid;
     border-color: antiquewhite;
+    white-space: pre-wrap;
 }
 
 #foldersDiv, #filesDiv, #fileDisplay {
-    /* width: 800px; */
-    /* height: 400px; */
     margin-left: 120px;
     margin-right: 120px;
-    /* border: 2px, solid #ffffff, ; */
+}
+
+#fileDisplay {
+    width: 80%;
 }
