@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Border Previewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Border Previewer</h1>
+    <p style="text-align: center;">Play with the values below to change the appearance of the box. <br>
+    Note: The values for the border radius are percentages and not number of pixels</p>
+    <div id="box">
+        <input id="topLeft" class="cornerInput" type="text" value="0" maxlength="3">
+        <input id="topRight" class="cornerInput" type="text" value="0" maxlength="3">
+        <input id="bottomLeft" class="cornerInput" type="text" value="0" maxlength="3">
+        <input id="bottomRight" class="cornerInput" type="text" value="0" maxlength="3">
+    </div>
+    <div>
+        <label>All 4 Corners:
+            <input id="allCorners" class="cornerInput" type="text" value="0" maxlength="3">
+        </label>
+        <label>Border Thickness:
+            <input id="borderThickness" type="text" value="0">
+        </label>
+        <label>Box Color:
+            <input id="boxColor" type="color">
+        </label>
+        <label>Border Color:
+            <input id="borderColor" type="color">
+        </label>
+        <label>Background Color:
+            <input id="BackgroundColor" type="color">
+        </label>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
