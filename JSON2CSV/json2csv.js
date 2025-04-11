@@ -1,5 +1,8 @@
 const fs = require('fs');
+
 const hexChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+const escapeSequences = ['"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'u']
+const whitespace = [' ', '\n', '\r', '\t']
 
 function json2csv(data){
     const lines = data.split('\n');
@@ -9,6 +12,11 @@ function json2csv(data){
         csvLines.push(parseLine(line));
     }
     return csvLines.join('\n');
+}
+
+// returns true if 'i' is the last position of 'line'
+function endofLine(line, i){
+    return i === line.length - 1;
 }
 
 function parseLine(line){
@@ -22,11 +30,12 @@ function parseLine(line){
                 console.log("Error: Invalid JSON line.");
                 return;
             }
-            if (isWhitespace(line[1]) && line[2] === '}'){
+            skipWhitespace(line, index);
+            if (line[index] === '}' && endofLine(line, index)){
                 // empty object
                 // * do something *
             }
-            parseObjectMember(obj, index);
+            parseObjectMember(obj, line, index);
 
             // keeps reading more members until we reach the end
             while (line[index] !== '}'){
@@ -53,7 +62,9 @@ function parseLine(line){
                 console.log("Error: Invalid JSON line.");
                 return;
             }
-            if (isWhitespace(line[1]) && line[2] === ']'){
+
+            skipWhitespace(line, index);
+            if (line[index] === ']' && endofLine(line, index)){
                 // empty array
                 // * do something *
             }
@@ -61,12 +72,17 @@ function parseLine(line){
             // * HANDLE VALUE *
 
             // keeps reading items until we reach the end
-            while (line[index] !== '}'){
+            while (line[index] !== ']'){
                 if (line[index] !== ','){
                     console.log("Error: Invalid JSON line.");
                     return;
                 }
                 // * HANDLE VALUE *
+            }
+
+            if (!endofLine(line, index)){
+                console.log("Error: Invalid JSON line.");
+                return;
             }
         }
         default:
@@ -76,16 +92,24 @@ function parseLine(line){
     return csvContent;
 }
 
-function parseObjectMember(obj, index){
+function parseObjectMember(obj, line, index){
     let str = '', val;
-    if (!isWhitespace(line[index++])){
+    
+    skipWhitespace(line, index);
+    if (line[index++] !== '"'){
         console.log("Error: Invalid JSON line.");
         return;
     }
 
-    // read a string until we find whitespace
-    while (!isWhitespace(line[index])) str += line[index++];
-    index++;
+    // consume characters to store in 'str'
+    while (!(line[index] === '"' && line[index - 1] !== '\\')){
+        if (endofLine(line, index)){
+            console.log("Error: Invalid JSON line.");
+            return;
+        }
+        str += line[index++];
+    } 
+    skipWhitespace(line, index);
     
     if (!isValidString(str)){
         console.log("Error: Invalid JSON line.");
@@ -96,9 +120,19 @@ function parseObjectMember(obj, index){
         return;
     }
 
-    // * HANDLE VALUE * (recursively?)
+    val = parseValue(index);
 
     obj[str] = val;
+}
+
+function parseValue(line, index){
+    let str = line.slice(index);
+    str = str.trim();
+
+    // * verify if it's an object or array *
+
+    if (isValidString(str) || isValidNumber(str) ||
+        str === "true" || str === "false" || str === "null") return str;
 }
 
 function isValidString(str){
@@ -110,13 +144,13 @@ function isValidString(str){
     let escapeChar = false;
     for (i = 1; i < str.length; i++){
         if (escapeChar){
-            if (!(str[i] in ['"','\\', '/', 'b', 'f', 'n', 'r', 't', 'u'])) return false;
+            if (!escapeSequences.includes(str[i])) return false;
             if (str[i] === 'u') hex = 1;
             escapeChar = false;
             continue;
         }
         if (hex > 0){
-            if (!(str[i] in hexChars)) return false;
+            if (!hexChars.includes(str[i])) return false;
             hex = (hex + 1) % 5; // back to zero after it reaches 4
             continue;
         }
@@ -126,8 +160,73 @@ function isValidString(str){
     return true;
 }
 
-function isWhitespace(char){
-    // reminder: whitespace can be more than one character long
+function isValidNumber(str){
+    // Helper functions:
+    function skipDigits(str, index){
+        for (let i = index; i < str.length; i++)
+            if (!("0123456789".includes(str[i]))) return i; 
+        return -1; // reached the end
+    }
+    
+    function checkSpecialCases(str, i){
+        switch (str[i]) {
+            case '.':
+                return isFraction(str, i + 1);
+            case 'e':
+            case 'E':
+                return isExponent(str, i + 1);
+            default:
+                return false;
+        }
+    }
+    
+    function isFraction(str, i){
+        let j = skipDigits(str, i);
+        if (j === -1) return true;
+        if (str[j] === 'e' || str[j] === 'E') return isExponent(str, j + 1);
+    }
+    
+    function isExponent(str, i){
+        if (str[i] === '-' || str[i] === '+') i++;
+        if (skipDigits(str, i) === -1) return true;
+        return false;
+    }
+
+    let i;
+    switch (str[0]) {
+        case '0':
+            return checkSpecialCases(str, 1);
+        case '-':
+            if (str[1] === '0') return checkSpecialCases(str, 2);
+            if ((i = skipDigits(str, 1)) === -1) 
+                break;
+            else
+                return checkSpecialCases(str, i);
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            if ((i = skipDigits(str, 1)) === -1)
+                break;
+            else 
+                return checkSpecialCases(str, i)
+        default:
+            return false;
+    }
+    return true;
+}
+
+// skips whitespace starting at str[index] and leaves 'index' one position after the whitespace
+// assumes 'index' is passed by reference
+function skipWhitespace(str, index){
+    for (let i = index; i < str.length; i++){
+        if (!whitespace.includes(str[index])) i--; return;
+    }
 }
 
 function main(){
